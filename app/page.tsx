@@ -1,289 +1,103 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
-import { useAuth } from "@/lib/auth-context"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Spinner } from "@/components/ui/spinner"
-import { ZapIcon, AlertCircleIcon, ArrowRight } from "@/components/icons"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ZapIcon, CheckIcon } from "@/components/icons"
 
-export default function AuthPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [role, setRole] = useState<"annotator" | "qa" | "admin" | "client">("annotator")
-  const [error, setError] = useState("")
-  const [tab, setTab] = useState("login")
-  const { login, signup, isLoading } = useAuth()
-  const router = useRouter()
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    try {
-      await login(email, password)
-      router.push("/app/dashboard")
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed")
-    }
-  }
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    try {
-      await signup(email, password, name, role)
-      router.push("/app/dashboard")
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Signup failed")
-    }
-  }
-
-  const demoAccounts = [
-    { email: "admin@sentra.com", role: "Admin", description: "Full platform access" },
-    { email: "annotator1@sentra.com", role: "Annotator", description: "Annotation tools" },
-    { email: "qa@sentra.com", role: "QA", description: "Review & quality" },
-    { email: "client@sentra.com", role: "Client", description: "Project overview" },
-  ]
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-surface-light to-background flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Left side - Branding */}
-          <div className="hidden lg:flex flex-col justify-center space-y-8">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
-                <ZapIcon className="w-7 h-7 text-white" />
-              </div>
-              <h1 className="text-4xl font-bold text-foreground mb-3">Sentra</h1>
-              <p className="text-lg text-muted-foreground">Professional data annotation platform with video support</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-surface-light to-background">
+      {/* Header */}
+      <header className="border-b border-border">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center">
+              <ZapIcon className="w-6 h-6 text-white" />
             </div>
+            <span className="text-xl font-bold">Sentra</span>
+          </div>
+          <Link href="/auth">
+            <Button variant="outline">Sign In</Button>
+          </Link>
+        </div>
+      </header>
 
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm mt-1">
-                  ✓
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">Image & Video Annotation</p>
-                  <p className="text-sm text-muted-foreground">Advanced tools for visual labeling</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm mt-1">
-                  ✓
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">Real-time Collaboration</p>
-                  <p className="text-sm text-muted-foreground">Work with your team seamlessly</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm mt-1">
-                  ✓
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">Quality Management</p>
-                  <p className="text-sm text-muted-foreground">Built-in QA and performance tracking</p>
-                </div>
-              </div>
+      {/* Hero Section */}
+      <main className="container mx-auto px-6 py-24">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-2xl shadow-primary/30">
+              <ZapIcon className="w-12 h-12 text-white" />
             </div>
           </div>
 
-          {/* Right side - Auth Form */}
-          <Tabs value={tab} onValueChange={setTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
+          {/* Headline */}
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground">
+              Professional Data Annotation
+              <span className="block text-primary mt-2">Made Simple</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Human-in-the-loop annotation platform with advanced tools for images, video, and text
+            </p>
+          </div>
 
-            {/* Login Tab */}
-            <TabsContent value="login">
-              <Card className="border border-border bg-card/50 backdrop-blur-sm shadow-lg">
-                <CardHeader>
-                  <CardTitle>Welcome Back</CardTitle>
-                  <CardDescription>Sign in to your Sentra account</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    {error && (
-                      <Alert variant="destructive">
-                        <AlertCircleIcon className="h-4 w-4" />
-                        <AlertDescription>{error}</AlertDescription>
-                      </Alert>
-                    )}
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        className="bg-input/50"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        className="bg-input/50"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <Spinner />
-                      ) : (
-                        <>
-                          Continue
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <Link href="/auth">
+              <Button size="lg" className="px-8 py-6 text-lg bg-primary hover:bg-primary/90">
+                Get Started
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+              Learn More
+            </Button>
+          </div>
 
-                  <div className="mt-8 space-y-4">
-                    <div className="relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-border"></div>
-                      </div>
-                      <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-card text-muted-foreground">Demo Accounts</span>
-                      </div>
-                    </div>
-                    <div className="grid gap-2">
-                      {demoAccounts.map((account) => (
-                        <button
-                          key={account.email}
-                          onClick={() => {
-                            setEmail(account.email)
-                            setPassword("demo")
-                          }}
-                          className="w-full text-left p-3 rounded-lg border border-border hover:bg-card hover:border-accent transition-all group"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-semibold text-foreground text-sm">{account.role}</div>
-                              <div className="text-xs text-muted-foreground">{account.email}</div>
-                            </div>
-                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+          {/* Features */}
+          <div className="grid md:grid-cols-3 gap-8 pt-16">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto">
+                <CheckIcon className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold">Advanced Tools</h3>
+              <p className="text-muted-foreground text-sm">
+                Intuitive annotation workspace with bounding boxes, polygons, and text highlighting
+              </p>
+            </div>
 
-            {/* Signup Tab */}
-            <TabsContent value="signup">
-              <Card className="border border-border bg-card/50 backdrop-blur-sm shadow-lg">
-                <CardHeader>
-                  <CardTitle>Create Account</CardTitle>
-                  <CardDescription>Get started with professional data annotation</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSignup} className="space-y-4">
-                    {error && (
-                      <Alert variant="destructive">
-                        <AlertCircleIcon className="h-4 w-4" />
-                        <AlertDescription>{error}</AlertDescription>
-                      </Alert>
-                    )}
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name">Full Name</Label>
-                      <Input
-                        id="signup-name"
-                        placeholder="John Doe"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        className="bg-input/50"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        className="bg-input/50"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        className="bg-input/50"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="role">Role</Label>
-                      <select
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value as "annotator" | "qa" | "admin" | "client")}
-                        disabled={isLoading}
-                        className="w-full px-3 py-2 bg-input/50 border border-border rounded-lg text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                      >
-                        <option value="annotator">Annotator</option>
-                        <option value="qa">QA Reviewer</option>
-                        <option value="admin">Administrator</option>
-                        <option value="client">Client</option>
-                      </select>
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <Spinner />
-                      ) : (
-                        <>
-                          Create Account
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mx-auto">
+                <CheckIcon className="w-6 h-6 text-accent" />
+              </div>
+              <h3 className="text-lg font-semibold">Quality Control</h3>
+              <p className="text-muted-foreground text-sm">
+                Built-in QA review system with performance tracking and accuracy metrics
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto">
+                <CheckIcon className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold">Team Management</h3>
+              <p className="text-muted-foreground text-sm">
+                Workforce hub with training programs and real-time collaboration features
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border mt-32">
+        <div className="container mx-auto px-6 py-8 text-center">
+          <p className="text-muted-foreground text-sm">
+            © 2025 Sentra by Tessellations. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -16,7 +16,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/")
+      router.push("/auth")
     }
   }, [user, isLoading, router])
 
