@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { User } from "@/lib/types"
 import { Search, MoreVertical } from "lucide-react"
+import { EmptyState } from "@/components/ui/empty-state"
 
 interface TeamManagementProps {
   annotators: User[]
@@ -100,6 +101,19 @@ export function TeamManagement({ annotators }: TeamManagementProps) {
             </TableBody>
           </Table>
         </div>
+
+        {annotatorData.length === 0 && (
+          <EmptyState
+            variant={searchQuery ? "no-results" : "default"}
+            title={searchQuery ? "No annotators found" : "No team members"}
+            description={
+              searchQuery
+                ? "Try adjusting your search query"
+                : "Add team members to start managing your annotation workforce"
+            }
+            actionLabel="Add Member"
+          />
+        )}
       </CardContent>
     </Card>
   )

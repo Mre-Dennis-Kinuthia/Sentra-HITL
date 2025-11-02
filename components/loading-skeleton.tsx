@@ -1,5 +1,5 @@
 "use client"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton, ShimmerSkeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function DashboardSkeleton() {
@@ -7,17 +7,17 @@ export function DashboardSkeleton() {
     <div className="space-y-6">
       {/* Header skeleton */}
       <div className="space-y-2">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-96" />
+        <ShimmerSkeleton className="h-8 w-48" />
+        <ShimmerSkeleton className="h-4 w-96" />
       </div>
 
       {/* Metrics skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i}>
+          <Card key={i} className="card-interactive">
             <CardContent className="pt-6">
-              <Skeleton className="h-6 w-24 mb-2" />
-              <Skeleton className="h-8 w-16" />
+              <ShimmerSkeleton className="h-6 w-24 mb-2" />
+              <ShimmerSkeleton className="h-8 w-16" />
             </CardContent>
           </Card>
         ))}

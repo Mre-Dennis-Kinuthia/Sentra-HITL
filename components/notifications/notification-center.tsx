@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { BellIcon, Trash2Icon, CheckIcon, AlertCircleIcon, CheckCircleIcon, InfoIcon } from "@/components/icons"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { EmptyState } from "@/components/ui/empty-state"
 
 export function NotificationCenter() {
   const { notifications, markAsRead, dismissNotification, clearAll, unreadCount } = useNotifications()
@@ -76,10 +77,12 @@ export function NotificationCenter() {
         </div>
 
         {notifications.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            <BellIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No notifications yet</p>
-          </div>
+          <EmptyState
+            variant="default"
+            title="No notifications"
+            description="You're all caught up! New notifications will appear here."
+            icon={BellIcon}
+          />
         ) : (
           <ScrollArea className="h-80">
             <div className="space-y-1 p-2">

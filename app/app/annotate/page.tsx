@@ -13,6 +13,7 @@ import { CheckCircle2, Clock, AlertCircle, MessageSquare } from "lucide-react"
 import { FeedbackModal } from "@/components/notifications/feedback-modal"
 import { RealTimeStatus } from "@/components/notifications/real-time-status"
 import { useNotifications } from "@/lib/notifications-context"
+import { EmptyState } from "@/components/ui/empty-state"
 
 export default function AnnotatePage() {
   const [tasks] = useState<AnnotationTask[]>(mockTasks)
@@ -83,7 +84,7 @@ export default function AnnotatePage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
+        <Card className="card-interactive">
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
@@ -94,7 +95,7 @@ export default function AnnotatePage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="card-interactive">
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
@@ -105,7 +106,7 @@ export default function AnnotatePage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="card-interactive">
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
@@ -206,11 +207,11 @@ export default function AnnotatePage() {
               </div>
             </div>
           ) : (
-            <Card className="flex items-center justify-center min-h-96">
-              <CardContent className="text-center">
-                <p className="text-muted-foreground">Select a task to begin annotating</p>
-              </CardContent>
-            </Card>
+            <EmptyState
+              variant="no-tasks"
+              title="No task selected"
+              description="Select a task from the sidebar to begin annotating"
+            />
           )}
         </div>
 

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { QAReview, Annotation } from "@/lib/types"
 import { Search, ChevronUp, ChevronDown } from "lucide-react"
+import { EmptyState } from "@/components/ui/empty-state"
 
 interface QAReviewTableProps {
   reviews: (QAReview & { annotation?: Annotation })[]
@@ -145,7 +146,15 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
         </div>
 
         {filteredReviews.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-muted-foreground">No reviews found</div>
+          <EmptyState
+            variant={searchQuery ? "no-results" : "default"}
+            title={searchQuery ? "No reviews found" : "No reviews yet"}
+            description={
+              searchQuery
+                ? "Try adjusting your search query to find reviews"
+                : "Reviews will appear here once annotations are submitted for QA"
+            }
+          />
         )}
       </CardContent>
     </Card>

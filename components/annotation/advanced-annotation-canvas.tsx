@@ -24,6 +24,7 @@ import {
   Unlock,
 } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { KeyboardShortcutsModal } from "@/components/ui/keyboard-shortcuts-modal"
 
 interface AdvancedAnnotationCanvasProps {
   mediaUrl: string
@@ -548,50 +549,10 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
       </div>
 
       {/* Keyboard Shortcuts Modal */}
-      {showKB && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="max-w-md">
-            <div className="p-6">
-              <h3 className="font-semibold text-lg mb-4">Keyboard Shortcuts</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">B</kbd> Bounding Box
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">P</kbd> Polygon
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">O</kbd> Point
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">T</kbd> Text
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">+/-</kbd> Zoom
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">Ctrl+Z</kbd> Undo
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">Ctrl+Y</kbd> Redo
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">DEL</kbd> Clear
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">Space</kbd> Play/Pause
-                </div>
-                <div>
-                  <kbd className="bg-secondary px-2 py-1 rounded text-xs">?</kbd> Shortcuts
-                </div>
-              </div>
-              <Button onClick={() => setShowKB(false)} className="w-full mt-4">
-                Close
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
+      <KeyboardShortcutsModal
+        isOpen={showKB}
+        onClose={() => setShowKB(false)}
+      />
     </div>
   )
 }
