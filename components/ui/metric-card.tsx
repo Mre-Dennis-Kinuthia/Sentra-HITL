@@ -42,7 +42,7 @@ export function MetricCard({
   return (
     <Card
       className={cn(
-        "card-interactive transition-smooth",
+        "card-modern transition-smooth",
         onClick && "cursor-pointer",
         className
       )}
