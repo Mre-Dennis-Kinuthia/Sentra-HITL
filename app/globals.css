@@ -4,25 +4,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated premium color palette - deeper blacks, more vibrant accents */
-  --background: #0a0e27;
-  --foreground: #f8fafc;
-  --card: #151b36;
-  --card-foreground: #f8fafc;
-  --popover: #151b36;
-  --popover-foreground: #f8fafc;
+  /* Clean light theme color palette */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
   --primary: #7c3aed;
   --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #475569;
-  --muted-foreground: #cbd5e1;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
   --accent: #06b6d4;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #1e293b;
-  --input: #1e293b;
+  --border: #e2e8f0;
+  --input: #f8fafc;
   --ring: #7c3aed;
   --chart-1: #7c3aed;
   --chart-2: #06b6d4;
@@ -30,18 +30,18 @@
   --chart-4: #ec4899;
   --chart-5: #3b82f6;
   --radius: 0.75rem;
-  --sidebar: #0f1424;
-  --sidebar-foreground: #f8fafc;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
   --sidebar-primary: #7c3aed;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #1e293b;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
   --sidebar-ring: #7c3aed;
   /* Added new tokens for better visual hierarchy */
-  --surface-subtle: #0f1424;
-  --surface-light: #1a2546;
-  --divider: #1e293b;
+  --surface-subtle: #f8fafc;
+  --surface-light: #f1f5f9;
+  --divider: #e2e8f0;
   --success: #10b981;
   --warning: #f59e0b;
   --info: #06b6d4;
@@ -143,7 +143,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-muted hover:bg-accent rounded-full transition-colors;
+  @apply bg-slate-300 hover:bg-slate-400 rounded-full transition-colors;
 }
 
 /* Added smooth transitions globally */
@@ -176,7 +176,7 @@
     background: linear-gradient(
       90deg,
       var(--muted) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.8) 50%,
       var(--muted) 100%
     );
     background-size: 200% 100%;

@@ -79,8 +79,8 @@ export function MetricCard({
           </div>
           {Icon && (
             <div className="ml-4 flex-shrink-0">
-              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-muted/50">
-                <Icon className="w-6 h-6 text-muted-foreground" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-muted">
+                <Icon className="w-6 h-6 text-muted-foreground opacity-70" />
               </div>
             </div>
           )}
