@@ -13,7 +13,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0]
     return (
-      <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded-lg shadow-modern-lg p-3">
+      <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded shadow-modern-lg p-3">
         <p className="font-semibold text-slate-900 mb-1">{data.name}</p>
         <p className="text-sm text-slate-600">
           <span className="font-semibold text-slate-900">{data.value}%</span> • {data.payload.count} annotations

@@ -15,7 +15,7 @@ const chartData = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded-lg shadow-modern-lg p-3">
+      <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded shadow-modern-lg p-3">
         <p className="font-semibold text-slate-900 mb-2">{label}</p>
         <div className="space-y-1">
           {payload.map((entry: any, index: number) => (
