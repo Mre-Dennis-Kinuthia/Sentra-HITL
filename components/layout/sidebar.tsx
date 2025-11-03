@@ -18,7 +18,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       roles: ["annotator", "qa", "admin"],
     },
     {
-      label: "My Tasks",
+      label: "Tasks",
       href: "/app/annotate/tasks",
       icon: ListChecks,
       roles: ["annotator", "qa", "admin"],
@@ -30,19 +30,19 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       roles: ["annotator", "qa", "admin"],
     },
     {
-      label: "Annotator Analytics",
+      label: "Analytics",
       href: "/app/annotate/analytics",
       icon: BarChart3,
       roles: ["annotator", "qa", "admin"],
     },
     {
-      label: "QA Review",
+      label: "QA",
       href: "/app/qa",
       icon: ShieldCheck,
       roles: ["qa", "admin"],
     },
     {
-      label: "Workforce",
+      label: "Team",
       href: "/app/workforce",
       icon: Users,
       roles: ["admin"],
@@ -94,17 +94,17 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             const isActive = pathname === item.href
             return (
               <Link key={item.href} href={item.href}>
-                <button
+                <div
                   onClick={onClose}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full flex items-center gap-3 px-4 h-10 rounded-lg transition-colors text-left cursor-pointer ${
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground"
                       : "text-sidebar-foreground hover:bg-sidebar-accent"
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                </button>
+                  <Icon className="w-5 h-5 shrink-0" />
+                  <span className="font-medium text-sm tracking-tight truncate">{item.label}</span>
+                </div>
               </Link>
             )
           })}
