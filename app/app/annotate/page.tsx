@@ -14,6 +14,7 @@ import { FeedbackModal } from "@/components/notifications/feedback-modal"
 import { RealTimeStatus } from "@/components/notifications/real-time-status"
 import { useNotifications } from "@/lib/notifications-context"
 import { EmptyState } from "@/components/ui/empty-state"
+import { useAnnotationStore } from "@/lib/annotation-store"
 
 export default function AnnotatePage() {
   const [tasks] = useState<AnnotationTask[]>(mockTasks)
@@ -21,6 +22,7 @@ export default function AnnotatePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const { addNotification } = useNotifications()
+  const { annotations } = useAnnotationStore()
 
   const stats = {
     completed: tasks.filter((t) => t.status === "completed").length,
@@ -50,6 +52,11 @@ export default function AnnotatePage() {
   }
 
   const handleSubmitTask = () => {
+    // Basic validation
+    if (annotations.length === 0) {
+      addNotification({ type: "error", title: "Add annotations first", message: "Please create at least one annotation before submitting." })
+      return
+    }
     if (selectedTask) {
       addNotification({
         type: "success",

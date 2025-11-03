@@ -56,6 +56,9 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
   const [startPos, setStartPos] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isPanning, setIsPanning] = useState(false)
+  const panStart = useRef<{ x: number; y: number } | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [label, setLabel] = useState("object")
   const [color, setColor] = useState("#7c3aed")
   const [videoPlaying, setVideoPlaying] = useState(false)
@@ -172,11 +175,26 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
     const x = (e.clientX - rect.left - pan.x) / zoom
     const y = (e.clientY - rect.top - pan.y) / zoom
 
+    // Middle-click or hold Space + left button to pan
+    if (e.button === 1 || (e.button === 0 && (e.nativeEvent as any).getModifierState?.("Space"))) {
+      setIsPanning(true)
+      panStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y }
+      return
+    }
+
     setStartPos({ x, y })
     setIsDrawing(true)
   }
 
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isPanning) {
+      if (panStart.current) {
+        const newX = e.clientX - panStart.current.x
+        const newY = e.clientY - panStart.current.y
+        setPan({ x: newX, y: newY })
+      }
+      return
+    }
     if (!isDrawing) return
 
     const canvas = canvasRef.current
@@ -191,6 +209,11 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
   }
 
   const handleCanvasMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isPanning) {
+      setIsPanning(false)
+      panStart.current = null
+      return
+    }
     if (!isDrawing) return
 
     const canvas = canvasRef.current
@@ -369,6 +392,13 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
             </Tooltip>
           </div>
 
+          {/* View / Sidebar toggle */}
+          <div className="flex items-center gap-1 border-r border-border px-2">
+            <Button size="sm" variant="ghost" onClick={() => setSidebarOpen((v) => !v)} className="gap-1">
+              {sidebarOpen ? "Hide Panel" : "Show Panel"}
+            </Button>
+          </div>
+
           {/* Export/Import */}
           <div className="flex items-center gap-1 ml-auto">
             <Tooltip>
@@ -464,6 +494,7 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
         </div>
 
         {/* Annotations Sidebar */}
+        {sidebarOpen && (
         <div className="w-64 bg-card border-l border-border flex flex-col overflow-hidden">
           <div className="p-4 border-b border-border space-y-3">
             <div className="space-y-1">
@@ -546,6 +577,7 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Keyboard Shortcuts Modal */}
