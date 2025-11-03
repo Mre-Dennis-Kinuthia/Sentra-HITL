@@ -16,7 +16,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Platform overview and project management</p>
+        <p className="text-muted-foreground mt-2">Essential metrics and overview</p>
       </div>
 
       <ProjectMetrics
@@ -28,15 +28,6 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <WeeklyActivity />
-        <QualityDistribution />
-      </div>
-
-      <PerformanceTrends />
-
-      <CostAnalytics />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ActivityFeed />
         <AnnotatorPerformance />
       </div>
 

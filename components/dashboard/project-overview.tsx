@@ -157,8 +157,7 @@ export function ProjectOverview() {
                 <Progress value={project.progress} />
               </div>
 
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Accuracy: {project.accuracy}%</span>
+              <div className="flex justify-end">
                 <Button variant="outline" size="sm">
                   View
                 </Button>
