@@ -3,7 +3,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
-import { BarChartIcon, CheckSquareIcon, UsersIcon, SettingsIcon, LogOutIcon, XIcon, ZapIcon } from "@/components/icons"
+import { LogOutIcon, XIcon } from "@/components/icons"
+import { Pencil, ListChecks, History as HistoryIcon, BarChart3, ShieldCheck, Users, LayoutDashboard, Settings } from "lucide-react"
 
 export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const pathname = usePathname()
@@ -13,49 +14,49 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     {
       label: "Annotate",
       href: "/app/annotate",
-      icon: CheckSquareIcon,
+      icon: Pencil,
       roles: ["annotator", "qa", "admin"],
     },
     {
       label: "My Tasks",
       href: "/app/annotate/tasks",
-      icon: CheckSquareIcon,
+      icon: ListChecks,
       roles: ["annotator", "qa", "admin"],
     },
     {
       label: "History",
       href: "/app/annotate/history",
-      icon: BarChartIcon,
+      icon: HistoryIcon,
       roles: ["annotator", "qa", "admin"],
     },
     {
       label: "Annotator Analytics",
       href: "/app/annotate/analytics",
-      icon: BarChartIcon,
+      icon: BarChart3,
       roles: ["annotator", "qa", "admin"],
     },
     {
       label: "QA Review",
       href: "/app/qa",
-      icon: BarChartIcon,
+      icon: ShieldCheck,
       roles: ["qa", "admin"],
     },
     {
       label: "Workforce",
       href: "/app/workforce",
-      icon: UsersIcon,
+      icon: Users,
       roles: ["admin"],
     },
     {
       label: "Dashboard",
       href: "/app/dashboard",
-      icon: ZapIcon,
+      icon: LayoutDashboard,
       roles: ["admin", "client"],
     },
     {
       label: "Settings",
       href: "/app/settings",
-      icon: SettingsIcon,
+      icon: Settings,
       roles: ["admin", "annotator", "qa", "client"],
     },
   ]
