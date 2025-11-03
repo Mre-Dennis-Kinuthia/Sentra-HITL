@@ -16,7 +16,6 @@ export default function AnnotatorTasksPage() {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">My Tasks</h1>
-        <p className="text-muted-foreground text-sm">Pick a task to open the annotation workspace.</p>
       </div>
 
       <div className="max-w-3xl">
