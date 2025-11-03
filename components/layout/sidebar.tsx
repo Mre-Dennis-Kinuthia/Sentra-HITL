@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { LogOutIcon, XIcon } from "@/components/icons"
-import { Pencil, ListChecks, History as HistoryIcon, BarChart3, ShieldCheck, Users, LayoutDashboard, Settings } from "lucide-react"
+import { Pencil, ListChecks, History as HistoryIcon, BarChart3, ShieldCheck, Users, LayoutDashboard, Settings, Zap } from "lucide-react"
 
 export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const pathname = usePathname()
@@ -78,7 +78,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <ZapIcon className="w-5 h-5 text-white" />
+              <Zap className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg text-sidebar-foreground">Sentra</span>
           </div>
