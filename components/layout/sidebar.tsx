@@ -23,12 +23,6 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       roles: ["annotator", "qa", "admin"],
     },
     {
-      label: "My Tasks",
-      href: "/app/annotate/tasks",
-      icon: UsersIcon,
-      roles: ["annotator", "qa", "admin"],
-    },
-    {
       label: "History",
       href: "/app/annotate/history",
       icon: BarChartIcon,
