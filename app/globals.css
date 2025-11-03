@@ -29,7 +29,8 @@
   --chart-3: #f59e0b;
   --chart-4: #ec4899;
   --chart-5: #3b82f6;
-  --radius: 0.75rem;
+  /* Reduced global corner radius by ~60% */
+  --radius: 0.3rem;
   --sidebar: #f8fafc;
   --sidebar-foreground: #0f172a;
   --sidebar-primary: #7c3aed;
@@ -146,9 +147,10 @@
   @apply bg-slate-300 hover:bg-slate-400 rounded-full transition-colors;
 }
 
-/* Added smooth transitions globally */
+/* Disable animations and transitions globally */
 * {
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: none !important;
+  animation: none !important;
 }
 
 /* Disable transition on load */
@@ -243,26 +245,13 @@
     }
   }
 
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.4s ease-out;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.3s ease-out;
-  }
+  .animate-fade-in { animation: none !important; }
+  .animate-fade-in-up { animation: none !important; }
+  .animate-scale-in { animation: none !important; }
 
   /* Smooth transitions for common interactions */
-  .transition-smooth {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .transition-fast {
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  .transition-smooth { transition: none !important; }
+  .transition-fast { transition: none !important; }
 
   /* Modern Card Styling */
   .card-modern {
