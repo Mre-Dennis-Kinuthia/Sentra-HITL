@@ -17,6 +17,12 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       roles: ["annotator", "qa", "admin"],
     },
     {
+      label: "Annotator Analytics",
+      href: "/app/annotate/analytics",
+      icon: BarChartIcon,
+      roles: ["annotator", "qa", "admin"],
+    },
+    {
       label: "QA Review",
       href: "/app/qa",
       icon: BarChartIcon,

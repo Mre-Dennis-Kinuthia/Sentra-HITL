@@ -11,7 +11,6 @@ import { AdvancedAnnotationCanvas } from "@/components/annotation/advanced-annot
 import { AnnotationHistory } from "@/components/annotation/annotation-history"
 import { CheckCircle2, Clock, AlertCircle, MessageSquare } from "lucide-react"
 import { FeedbackModal } from "@/components/notifications/feedback-modal"
-import { RealTimeStatus } from "@/components/notifications/real-time-status"
 import { useNotifications } from "@/lib/notifications-context"
 import { EmptyState } from "@/components/ui/empty-state"
 import { useAnnotationStore } from "@/lib/annotation-store"
@@ -87,44 +86,7 @@ export default function AnnotatePage() {
         </Button>
       </div>
 
-      <RealTimeStatus />
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="card-interactive">
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Completed</p>
-                <p className="text-2xl font-bold mt-2">{stats.completed}</p>
-              </div>
-              <CheckCircle2 className="w-8 h-8 text-accent opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="card-interactive">
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">In Progress</p>
-                <p className="text-2xl font-bold mt-2">{stats.inProgress}</p>
-              </div>
-              <Clock className="w-8 h-8 text-primary opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="card-interactive">
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold mt-2">{stats.pending}</p>
-              </div>
-              <AlertCircle className="w-8 h-8 text-destructive opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Lean workspace: removed quick stats and realtime feed (see Annotator Analytics) */}
 
       {/* Main Annotation Area */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
