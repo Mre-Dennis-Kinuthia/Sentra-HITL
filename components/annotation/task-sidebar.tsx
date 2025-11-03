@@ -10,9 +10,10 @@ interface TaskSidebarProps {
   onSelectTask: (task: AnnotationTask) => void
   searchQuery: string
   onSearchChange: (query: string) => void
+  hideHeader?: boolean
 }
 
-export function TaskSidebar({ tasks, selectedTask, onSelectTask, searchQuery, onSearchChange }: TaskSidebarProps) {
+export function TaskSidebar({ tasks, selectedTask, onSelectTask, searchQuery, onSearchChange, hideHeader }: TaskSidebarProps) {
   const filteredTasks = tasks.filter(
     (task) =>
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,12 +35,14 @@ export function TaskSidebar({ tasks, selectedTask, onSelectTask, searchQuery, on
 
   return (
     <Card className="flex flex-col h-full">
-      <CardHeader>
-        <CardTitle>Tasks</CardTitle>
-        <CardDescription>
-          {filteredTasks.length} of {tasks.length} tasks
-        </CardDescription>
-      </CardHeader>
+      {!hideHeader && (
+        <CardHeader>
+          <CardTitle>Tasks</CardTitle>
+          <CardDescription>
+            {filteredTasks.length} of {tasks.length} tasks
+          </CardDescription>
+        </CardHeader>
+      )}
       <CardContent className="flex-1 flex flex-col space-y-4 overflow-hidden">
         <Input
           placeholder="Search tasks..."

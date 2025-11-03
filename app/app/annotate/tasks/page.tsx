@@ -1,12 +1,13 @@
 "use client"
 
+import * as React from "react"
 import { useState } from "react"
 import { mockTasks } from "@/lib/mock-data"
 import type { AnnotationTask } from "@/lib/types"
 import { TaskSidebar } from "@/components/annotation/task-sidebar"
 import { useRouter } from "next/navigation"
 
-export default function AnnotatorTasksPage() {
+export default function AnnotatorTasksPage(): React.JSX.Element {
   const [tasks] = useState<AnnotationTask[]>(mockTasks)
   const [selected, setSelected] = useState<AnnotationTask | null>(null)
   const [query, setQuery] = useState("")
@@ -17,7 +18,6 @@ export default function AnnotatorTasksPage() {
       <div>
         <h1 className="text-2xl font-semibold">My Tasks</h1>
       </div>
-
       <div className="max-w-3xl">
         <TaskSidebar
           tasks={tasks}
@@ -28,6 +28,7 @@ export default function AnnotatorTasksPage() {
           }}
           searchQuery={query}
           onSearchChange={setQuery}
+          hideHeader
         />
       </div>
     </div>
