@@ -58,7 +58,7 @@ export function AdvancedAnnotationCanvas({ mediaUrl, mediaType, onAnnotationComp
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isPanning, setIsPanning] = useState(false)
   const panStart = useRef<{ x: number; y: number } | null>(null)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [label, setLabel] = useState("object")
   const [color, setColor] = useState("#7c3aed")
   const [videoPlaying, setVideoPlaying] = useState(false)

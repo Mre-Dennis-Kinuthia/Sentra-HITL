@@ -1,24 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { mockTasks } from "@/lib/mock-data"
 import type { AnnotationTask } from "@/lib/types"
-import { TaskSidebar } from "@/components/annotation/task-sidebar"
+import Link from "next/link"
 import { AdvancedAnnotationCanvas } from "@/components/annotation/advanced-annotation-canvas"
-import { AnnotationHistory } from "@/components/annotation/annotation-history"
 import { CheckCircle2, Clock, AlertCircle, MessageSquare } from "lucide-react"
 import { FeedbackModal } from "@/components/notifications/feedback-modal"
 import { useNotifications } from "@/lib/notifications-context"
 import { EmptyState } from "@/components/ui/empty-state"
 import { useAnnotationStore } from "@/lib/annotation-store"
 
+import { useSearchParams } from "next/navigation"
+
 export default function AnnotatePage() {
   const [tasks] = useState<AnnotationTask[]>(mockTasks)
   const [selectedTask, setSelectedTask] = useState<AnnotationTask | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
+  const searchParams = useSearchParams()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const { addNotification } = useNotifications()
   const { annotations } = useAnnotationStore()
@@ -73,129 +74,57 @@ export default function AnnotatePage() {
     }
   }
 
+  useEffect(() => {
+    const id = searchParams.get("taskId")
+    if (id) {
+      const found = tasks.find((t) => t.id === id)
+      if (found) setSelectedTask(found)
+    }
+  }, [searchParams, tasks])
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Annotation Workspace</h1>
-          <p className="text-muted-foreground mt-2">Complete annotation tasks for your projects</p>
+          <h1 className="text-2xl font-semibold">Annotation</h1>
         </div>
-        <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)} className="gap-2">
-          <MessageSquare className="w-4 h-4" />
-          Share Feedback
-        </Button>
-      </div>
-
-      {/* Lean workspace: removed quick stats and realtime feed (see Annotator Analytics) */}
-
-      {/* Main Annotation Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Sidebar - Task List */}
-        <div className="lg:col-span-1">
-          <TaskSidebar
-            tasks={tasks}
-            selectedTask={selectedTask}
-            onSelectTask={setSelectedTask}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-          />
-        </div>
-
-        {/* Center - Annotation Canvas */}
-        <div className="lg:col-span-2">
-          {selectedTask ? (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle>{selectedTask.title}</CardTitle>
-                      <CardDescription className="mt-1">{selectedTask.type} annotation task</CardDescription>
-                    </div>
-                    <Badge className="capitalize">{selectedTask.priority}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
-                    <div>
-                      <p className="text-muted-foreground">Status</p>
-                      <p className="font-medium capitalize">{selectedTask.status}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Type</p>
-                      <p className="font-medium capitalize">{selectedTask.type}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Due Date</p>
-                      <p className="font-medium">{selectedTask.dueDate.toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {selectedTask.type === "text" ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Text Annotation</CardTitle>
-                    <CardDescription>Highlight and annotate text content</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="p-4 bg-card border border-border rounded-lg min-h-48">
-                      <p className="text-foreground leading-relaxed text-justify">
-                        This is sample text content for annotation. Users can highlight specific portions to annotate
-                        sentiment, entities, or other linguistic features. The annotation system supports multiple label
-                        types and comprehensive feedback mechanisms.
-                      </p>
-                    </div>
-                    <div className="mt-4 flex gap-2">
-                      <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
-                        Highlight Text
-                      </button>
-                      <button className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80">
-                        Clear All
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="h-96 rounded-lg border border-border overflow-hidden">
-                  <AdvancedAnnotationCanvas
-                    mediaUrl={getMediaUrl(selectedTask)}
-                    mediaType={selectedTask.type as "image" | "video"}
-                  />
-                </div>
-              )}
-
-              <div className="flex gap-2">
-                <Button onClick={handleSaveAnnotation} className="flex-1">
-                  Save Annotations
-                </Button>
-                <Button onClick={handleSubmitTask} variant="outline" className="flex-1 bg-transparent">
-                  Submit for Review
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <EmptyState
-              variant="no-tasks"
-              title="No task selected"
-              description="Select a task from the sidebar to begin annotating"
-            />
-          )}
-        </div>
-
-        {/* Right Panel - History & Metadata */}
-        <div className="lg:col-span-1">
-          <AnnotationHistory />
+        <div className="flex items-center gap-2 text-sm">
+          <Link href="/app/annotate/tasks" className="text-primary">My Tasks</Link>
+          <span className="text-muted-foreground">/</span>
+          <Link href="/app/annotate/history" className="text-primary">History</Link>
+          <span className="text-muted-foreground">/</span>
+          <Link href="/app/annotate/analytics" className="text-primary">Analytics</Link>
+          <Button variant="outline" size="sm" onClick={() => setFeedbackOpen(true)} className="ml-2">
+            <MessageSquare className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
-      <FeedbackModal
-        isOpen={feedbackOpen}
-        onClose={() => setFeedbackOpen(false)}
-        taskId={selectedTask?.id}
-        taskTitle={selectedTask?.title}
-      />
+      {selectedTask ? (
+        <div className="space-y-3">
+          <div className="text-xs text-muted-foreground">
+            <Badge className="capitalize mr-2">{selectedTask.priority}</Badge>
+            {selectedTask.type} • Due {selectedTask.dueDate.toLocaleDateString()}
+          </div>
+          <div className="h-[70vh] rounded-lg border border-border overflow-hidden">
+            <AdvancedAnnotationCanvas mediaUrl={getMediaUrl(selectedTask)} mediaType={selectedTask.type as "image" | "video"} />
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={handleSaveAnnotation} className="flex-1">Save</Button>
+            <Button onClick={handleSubmitTask} variant="outline" className="flex-1 bg-transparent">Submit</Button>
+          </div>
+        </div>
+      ) : (
+        <EmptyState
+          variant="no-tasks"
+          title="No task selected"
+          description="Open My Tasks to start annotating"
+          actionLabel="Open My Tasks"
+          onAction={() => window.location.assign('/app/annotate/tasks')}
+        />
+      )}
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} taskId={selectedTask?.id} taskTitle={selectedTask?.title} />
     </div>
   )
 }
