@@ -15,25 +15,25 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       label: "Annotate",
       href: "/app/annotate",
       icon: Pencil,
-      roles: ["annotator", "qa", "admin"],
+      roles: ["annotator", "qa"],
     },
     {
       label: "Tasks",
       href: "/app/annotate/tasks",
       icon: ListChecks,
-      roles: ["annotator", "qa", "admin"],
+      roles: ["annotator", "qa"],
     },
     {
       label: "History",
       href: "/app/annotate/history",
       icon: HistoryIcon,
-      roles: ["annotator", "qa", "admin"],
+      roles: ["annotator", "qa"],
     },
     {
       label: "Analytics",
       href: "/app/annotate/analytics",
       icon: BarChart3,
-      roles: ["annotator", "qa", "admin"],
+      roles: ["annotator", "qa"],
     },
     {
       label: "QA",
@@ -82,9 +82,16 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             </div>
             <span className="font-bold text-lg text-sidebar-foreground">Sentra</span>
           </div>
-          <button onClick={onClose} className="md:hidden text-sidebar-foreground hover:text-sidebar-accent-foreground">
+          <div
+            role="button"
+            aria-label="Close sidebar"
+            tabIndex={0}
+            onClick={onClose}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClose()}
+            className="md:hidden text-sidebar-foreground hover:text-sidebar-accent-foreground cursor-pointer"
+          >
             <XIcon className="w-5 h-5" />
-          </button>
+          </div>
         </div>
 
         {/* Navigation */}
