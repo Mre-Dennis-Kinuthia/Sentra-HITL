@@ -2,23 +2,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import type { WorkforceTrainingModule, WorkforceTrainingSummary } from "@/lib/types"
+import { format } from "date-fns"
 
-interface TrainingModule {
-  id: string
-  name: string
-  completion: number
-  status: "completed" | "in_progress" | "pending"
+interface TrainingProgressProps {
+  modules: WorkforceTrainingModule[]
+  summary: WorkforceTrainingSummary
 }
 
-const trainingModules: TrainingModule[] = [
-  { id: "1", name: "Annotation Basics", completion: 100, status: "completed" },
-  { id: "2", name: "Advanced Labeling", completion: 75, status: "in_progress" },
-  { id: "3", name: "Quality Standards", completion: 0, status: "pending" },
-  { id: "4", name: "Tool Mastery", completion: 100, status: "completed" },
-  { id: "5", name: "Domain Expertise", completion: 50, status: "in_progress" },
-]
-
-export function TrainingProgress() {
+export function TrainingProgress({ modules, summary }: TrainingProgressProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
@@ -36,19 +28,27 @@ export function TrainingProgress() {
     <Card>
       <CardHeader>
         <CardTitle>Training Programs</CardTitle>
-        <CardDescription>Workforce skill development and certification</CardDescription>
+        <CardDescription>
+          {summary.completionRate}% completion - {summary.certifiedCount} certified - {summary.overdueCount} overdue - Next evaluation {format(summary.nextEvaluationDate, "MMM d")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {trainingModules.map((module) => (
+        {modules.map((module) => (
           <div key={module.id} className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <p className="font-medium text-sm">{module.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {module.participants} participants - Avg score {module.averageScore ? `${module.averageScore}%` : "N/A"}
+                </p>
               </div>
               <Badge className={`${getStatusBadge(module.status)} capitalize`}>{module.status.replace("_", " ")}</Badge>
             </div>
             <Progress value={module.completion} className="h-2" />
-            <p className="text-xs text-muted-foreground text-right">{module.completion}% complete</p>
+            <p className="text-xs text-muted-foreground text-right">
+              {module.completion}% complete
+              {module.dueDate ? ` - Due ${format(module.dueDate, "MMM d")}` : ""}
+            </p>
           </div>
         ))}
       </CardContent>
