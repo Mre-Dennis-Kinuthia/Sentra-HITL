@@ -1,4 +1,5 @@
 "use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis } from "recharts"
 import type { WorkforceCompositionSlice, WorkforceHeadcountTrendPoint } from "@/lib/types"
@@ -8,6 +9,7 @@ const colors = [
   "hsl(var(--chart-2))",
   "hsl(var(--chart-3))",
   "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
 ]
 
 interface WorkforceDistributionProps {
@@ -38,7 +40,7 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
                   label={({ name, value }) => `${value} ${name}`}
                 >
                   {composition.map((entry, index) => (
-                    <Cell key={entry.name} fill={colors[index % colors.length]} />
+                    <Cell key={entry.name} fill={colors[index % colors.length]} stroke="hsl(var(--background))" strokeWidth={1} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -51,7 +53,7 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
                     payload.name,
                   ]}
                 />
-                <Legend />
+                <Legend formatter={(value: string) => <span className="text-sm text-muted-foreground">{value}</span>} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -68,6 +70,14 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
                     <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.6} />
                     <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1} />
                   </linearGradient>
+                  <linearGradient id="colorTeamLeads" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1} />
+                  </linearGradient>
+                  <linearGradient id="colorContractors" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.05} />
+                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))/20" />
                 <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
@@ -78,10 +88,18 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
                     border: "1px solid hsl(var(--border))",
                   }}
                 />
-                <Area type="monotone" dataKey="annotators" stroke="hsl(var(--chart-1))" fill="url(#colorAnnotators)" name="Annotators" />
-                <Area type="monotone" dataKey="qa" stroke="hsl(var(--chart-2))" fill="url(#colorQa)" name="QA" />
-                <Area type="monotone" dataKey="teamLeads" stroke="hsl(var(--chart-3))" strokeWidth={1.5} fillOpacity={0} name="Team Leads" />
-                <Area type="monotone" dataKey="contractors" stroke="hsl(var(--chart-4))" strokeDasharray="4 4" fillOpacity={0} name="Contractors" />
+                <Area type="monotone" dataKey="annotators" stroke="hsl(var(--chart-1))" strokeWidth={2} fill="url(#colorAnnotators)" name="Annotators" />
+                <Area type="monotone" dataKey="qa" stroke="hsl(var(--chart-2))" strokeWidth={2} fill="url(#colorQa)" name="QA" />
+                <Area type="monotone" dataKey="teamLeads" stroke="hsl(var(--chart-3))" strokeWidth={2} fill="url(#colorTeamLeads)" name="Team Leads" />
+                <Area
+                  type="monotone"
+                  dataKey="contractors"
+                  stroke="hsl(var(--chart-4))"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  fill="url(#colorContractors)"
+                  name="Contractors"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
