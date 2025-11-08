@@ -5,11 +5,11 @@ import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, AreaChart, A
 import type { WorkforceCompositionSlice, WorkforceHeadcountTrendPoint } from "@/lib/types"
 
 const colors = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
 ]
 
 interface WorkforceDistributionProps {
@@ -40,13 +40,13 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
                   label={({ name, value }) => `${value} ${name}`}
                 >
                   {composition.map((entry, index) => (
-                    <Cell key={entry.name} fill={colors[index % colors.length]} stroke="hsl(var(--background))" strokeWidth={1} />
+                    <Cell key={entry.name} fill={colors[index % colors.length]} stroke="var(--background)" strokeWidth={1} />
                   ))}
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
+                    backgroundColor: "var(--card)",
+                    border: "1px solid var(--border)",
                   }}
                   formatter={(value: number, _, payload) => [
                     `${value} people (${payload.payload.change >= 0 ? "+" : ""}${payload.payload.change})`,
@@ -63,38 +63,38 @@ export function WorkforceDistribution({ composition, headcountTrend }: Workforce
               <AreaChart data={headcountTrend} margin={{ top: 16, right: 16, left: -24, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAnnotators" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.6} />
-                    <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1} />
+                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1} />
                   </linearGradient>
                   <linearGradient id="colorQa" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.6} />
-                    <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1} />
+                    <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0.1} />
                   </linearGradient>
                   <linearGradient id="colorTeamLeads" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.6} />
-                    <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1} />
+                    <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.6} />
+                    <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0.1} />
                   </linearGradient>
                   <linearGradient id="colorContractors" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.5} />
-                    <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.05} />
+                    <stop offset="5%" stopColor="var(--chart-4)" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="var(--chart-4)" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))/20" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--muted-foreground)" strokeOpacity={0.15} />
+                <XAxis dataKey="month" stroke="var(--muted-foreground)" strokeOpacity={0.4} fontSize={12} />
+                <YAxis stroke="var(--muted-foreground)" strokeOpacity={0.4} fontSize={12} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
+                    backgroundColor: "var(--card)",
+                    border: "1px solid var(--border)",
                   }}
                 />
-                <Area type="monotone" dataKey="annotators" stroke="hsl(var(--chart-1))" strokeWidth={2} fill="url(#colorAnnotators)" name="Annotators" />
-                <Area type="monotone" dataKey="qa" stroke="hsl(var(--chart-2))" strokeWidth={2} fill="url(#colorQa)" name="QA" />
-                <Area type="monotone" dataKey="teamLeads" stroke="hsl(var(--chart-3))" strokeWidth={2} fill="url(#colorTeamLeads)" name="Team Leads" />
+                <Area type="monotone" dataKey="annotators" stroke="var(--chart-1)" strokeWidth={2} fill="url(#colorAnnotators)" name="Annotators" />
+                <Area type="monotone" dataKey="qa" stroke="var(--chart-2)" strokeWidth={2} fill="url(#colorQa)" name="QA" />
+                <Area type="monotone" dataKey="teamLeads" stroke="var(--chart-3)" strokeWidth={2} fill="url(#colorTeamLeads)" name="Team Leads" />
                 <Area
                   type="monotone"
                   dataKey="contractors"
-                  stroke="hsl(var(--chart-4))"
+                  stroke="var(--chart-4)"
                   strokeWidth={2}
                   strokeDasharray="4 4"
                   fill="url(#colorContractors)"
