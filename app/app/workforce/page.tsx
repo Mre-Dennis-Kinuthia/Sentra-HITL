@@ -1,9 +1,6 @@
 "use client"
-import React from "react"
-import { MetricCard } from "@/components/ui/metric-card"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   getDistributionInsights,
   getPersonalizedAlerts,
@@ -13,13 +10,23 @@ import {
   getWorkforceKpis,
   getWorkforceMembers,
 } from "@/lib/workforce-data"
-import { Users, TrendingUp, CheckCircle2, AlertCircle, CalendarDays, UserCheck, CalendarClock } from "lucide-react"
 import { WorkforceStats } from "@/components/workforce/workforce-stats"
 import { TeamManagement } from "@/components/workforce/team-management"
 import { TrainingProgress } from "@/components/workforce/training-progress"
 import { WorkforceDistribution } from "@/components/workforce/workforce-distribution"
 import { WorkforceActionCenter } from "@/components/workforce/workforce-action-center"
 import { useAuth } from "@/lib/auth-context"
+import { PersonalWorkspace } from "@/components/workforce/personal-workspace"
+import { Section } from "@/components/workforce/section"
+
+declare global {
+  namespace JSX {
+    // Allow paragraph tags when lint runs without React types installed
+    interface IntrinsicElements {
+      p: any
+    }
+  }
+}
 
 export default function WorkforcePage() {
   const { user } = useAuth()
@@ -32,6 +39,27 @@ export default function WorkforcePage() {
   const canManage = user?.role === "admin" || user?.role === "team_lead"
   const personalSummary = user ? getPersonalSummary(user.id) : undefined
   const personalAlerts = user ? getPersonalizedAlerts(user.id) : []
+  const actionableAlerts = canManage ? alerts : personalAlerts
+  const trainingRelatedAlerts = actionableAlerts.filter((alert) => {
+    const text = `${alert.title} ${alert.description}`.toLowerCase()
+    return text.includes("train") || text.includes("certification") || text.includes("module")
+  })
+
+  const baseTabs = canManage
+    ? [
+        { value: "overview", label: "Command Center" },
+        { value: "team", label: "Team" },
+        { value: "training", label: "Training" },
+        { value: "insights", label: "Insights" },
+      ]
+    : [
+        ...(personalSummary ? [{ value: "my-work", label: "My Work" }] : []),
+        { value: "overview", label: "Team Overview" },
+        { value: "training", label: "Training" },
+        { value: "insights", label: "Insights" },
+      ]
+
+  const defaultTab = canManage ? "overview" : personalSummary ? "my-work" : "overview"
 
   return (
     <div className="space-y-6">
@@ -42,169 +70,111 @@ export default function WorkforcePage() {
         </p>
       </div>
 
-      <WorkforceStats summary={kpis} />
+      <Tabs defaultValue={defaultTab} className="space-y-8">
+        <TabsList className="flex flex-wrap gap-2 bg-transparent p-0">
+          {baseTabs.map((tab) => (
+            <TabsTrigger key={tab.value} value={tab.value} className="flex-none">
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        <MetricCard
-          title="Total Annotators"
-          value={kpis.totalMembers}
-          icon={Users}
-          trend={{
-            value: 6,
-            label: "vs last quarter",
-            isPositive: true,
-          }}
-          description={`${kpis.benchStrength} available on bench`}
-        />
+        {personalSummary && (
+          <TabsContent value="my-work" className="space-y-8">
+            <Section
+              title="Daily Focus"
+              description="Prioritized view of your assignments and alerts."
+            >
+              <PersonalWorkspace summary={personalSummary} alerts={personalAlerts} />
+            </Section>
 
-        <MetricCard
-          title="Active Today"
-          value={kpis.activeMembers}
-          icon={TrendingUp}
-          trend={{
-            value: kpis.utilization,
-            label: "utilization",
-            isPositive: kpis.utilization >= 80,
-          }}
-          description="Auto-adjusted for follow-the-sun coverage"
-        />
+            <Section
+              title="Skill Development"
+              description="Track certifications and upskilling progress."
+            >
+              <TrainingProgress modules={trainingModules} summary={trainingSummary} />
+            </Section>
+          </TabsContent>
+        )}
 
-        <MetricCard
-          title="Avg Quality"
-          value={`${kpis.avgQualityScore}%`}
-          icon={CheckCircle2}
-          trend={{
-            value: kpis.qualityTrend,
-            label: "vs last week",
-            isPositive: kpis.qualityTrend >= 0,
-          }}
-          description={`${kpis.tasksCompletedThisWeek} tasks reviewed this week`}
-        />
+        <TabsContent value="overview" className="space-y-8">
+          <Section
+            title="Team Pulse"
+            description="Live KPIs across utilization, quality, and delivery."
+          >
+            <WorkforceStats summary={kpis} />
+          </Section>
 
-        <MetricCard
-          title="On-Time Rate"
-          value={`${kpis.onTimeDelivery}%`}
-          icon={AlertCircle}
-          trend={{
-            value: kpis.upcomingPtoDays,
-            label: "PTO days upcoming",
-            isPositive: kpis.upcomingPtoDays < 10,
-          }}
-          description="SLA window 24h - escalations auto-routed"
-        />
+          <Section
+            title="Operations Desk"
+            description="Triaged action items and readiness for the week."
+          >
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+              <WorkforceActionCenter
+                alerts={actionableAlerts}
+                canResolve={Boolean(canManage)}
+                description={canManage ? undefined : "Your assigned follow-ups"}
+              />
+              <TrainingProgress modules={trainingModules} summary={trainingSummary} />
+            </div>
+          </Section>
 
-        <MetricCard
-          title="Training Coverage"
-          value={`${kpis.trainingCoverage}%`}
-          icon={CalendarDays}
-          trend={{
-            value: trainingSummary.overdueCount,
-            label: "overdue",
-            isPositive: trainingSummary.overdueCount === 0,
-          }}
-          description={`${trainingSummary.inProgressCount} modules in progress`}
-        />
+          <Section
+            title="Workforce Composition"
+            description="Role mix and headcount trends at a glance."
+          >
+            <WorkforceDistribution composition={composition} headcountTrend={headcountTrend} />
+          </Section>
+        </TabsContent>
 
-        <MetricCard
-          title="Bench Strength"
-          value={kpis.benchStrength}
-          icon={UserCheck}
-          trend={{
-            value: kpis.benchStrength,
-            label: "available",
-            isPositive: kpis.benchStrength >= 2,
-          }}
-          description="Immediate backfill capacity"
-        />
-      </div>
+        {canManage && (
+          <TabsContent value="team" className="space-y-8">
+            <Section
+              title="Team Directory"
+              description="Filter, sort, and manage individual contributors."
+            >
+              <TeamManagement members={workforceMembers} canManageMembers={Boolean(canManage)} />
+            </Section>
+          </TabsContent>
+        )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 space-y-6">
-          {personalSummary && user && !canManage && (
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle>My Focus</CardTitle>
-                <CardDescription>
-                  {personalSummary.activeTasks} active tasks - {personalSummary.dueToday} due today - Avg quality {personalSummary.avgQuality}%
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-center">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Active</p>
-                    <p className="text-xl font-semibold">{personalSummary.activeTasks}</p>
-                  </div>
-                  <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-center">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Due today</p>
-                    <p className="text-xl font-semibold">{personalSummary.dueToday}</p>
-                  </div>
-                  <div className="rounded-lg border border-border/60 bg-muted/30 p-3 text-center">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Training</p>
-                    <p className="text-xl font-semibold">{personalSummary.trainingModulesDue}</p>
-                  </div>
-                </div>
+        <TabsContent value="training" className="space-y-8">
+          <Section
+            title="Program Coverage"
+            description="Completion rates, certifications, and overdue modules."
+          >
+            <TrainingProgress modules={trainingModules} summary={trainingSummary} />
+          </Section>
+          <Section
+            title="Training Follow-ups"
+            description={
+              canManage
+                ? "Close the loop on overdue modules and escalations."
+                : "Focus on the modules assigned directly to you."
+            }
+          >
+            <WorkforceActionCenter
+              alerts={trainingRelatedAlerts.length ? trainingRelatedAlerts : actionableAlerts}
+              canResolve={Boolean(canManage)}
+              title={canManage ? "Training Follow-ups" : "My Training Follow-ups"}
+              description={
+                canManage
+                  ? `${trainingSummary.overdueCount} overdue modules across the team`
+                  : "Training assignments routed to you"
+              }
+            />
+          </Section>
+        </TabsContent>
 
-                {personalSummary.trainingModulesDue > 0 && personalSummary.nextTraining && (
-                  <div className="flex items-center gap-3 rounded-md border border-dashed border-border/50 p-3 text-sm">
-                    <CalendarClock className="h-5 w-5 text-primary" />
-                    <div>
-                      <p className="font-medium">Next training: {personalSummary.nextTraining}</p>
-                      <p className="text-xs text-muted-foreground">Complete to maintain certification</p>
-                    </div>
-                    <Button variant="link" className="ml-auto text-xs px-0">
-                      Open module
-                    </Button>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Focus areas</p>
-                  <div className="flex flex-wrap gap-2">
-                    {personalSummary.focusAreas.map((area) => (
-                      <Badge key={area} variant="secondary" className="capitalize">
-                        {area}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {personalAlerts.length > 0 && (
-                  <div className="space-y-3">
-                    <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide">Assigned alerts</p>
-                    {personalAlerts.map((alert) => (
-                      <div key={alert.id} className="flex items-start gap-3 rounded-lg border border-border/50 p-3 text-sm">
-                        <AlertCircle className="h-5 w-5 text-destructive" />
-                        <div>
-                          <p className="font-medium leading-tight">{alert.title}</p>
-                          <p className="text-xs text-muted-foreground">{alert.description}</p>
-                        </div>
-                        <Button variant="ghost" size="sm" className="ml-auto text-xs">
-                          {alert.action}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          <TeamManagement members={workforceMembers} canManageMembers={Boolean(canManage)} />
-        </div>
-
-        <div className="space-y-6">
-          <WorkforceActionCenter
-            alerts={canManage ? alerts : personalAlerts}
-            canResolve={Boolean(canManage)}
-            description={canManage ? undefined : "Your assigned follow-ups"}
-          />
-          <TrainingProgress modules={trainingModules} summary={trainingSummary} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <WorkforceDistribution composition={composition} headcountTrend={headcountTrend} />
-      </div>
+        <TabsContent value="insights" className="space-y-8">
+          <Section
+            title="Headcount Insights"
+            description="Monitor hiring momentum and coverage by role."
+          >
+            <WorkforceDistribution composition={composition} headcountTrend={headcountTrend} />
+          </Section>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
