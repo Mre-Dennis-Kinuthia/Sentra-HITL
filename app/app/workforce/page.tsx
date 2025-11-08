@@ -18,6 +18,9 @@ import { WorkforceActionCenter } from "@/components/workforce/workforce-action-c
 import { useAuth } from "@/lib/auth-context"
 import { PersonalWorkspace } from "@/components/workforce/personal-workspace"
 import { Section } from "@/components/workforce/section"
+import { ProjectMetrics } from "@/components/dashboard/project-metrics"
+import { ProjectOverview } from "@/components/dashboard/project-overview"
+import { mockProjectStats } from "@/lib/mock-data"
 
 declare global {
   namespace JSX {
@@ -36,7 +39,8 @@ export default function WorkforcePage() {
   const { summary: trainingSummary, modules: trainingModules } = getTrainingInsights()
   const { composition, headcountTrend } = getDistributionInsights()
 
-  const canManage = user?.role === "admin" || user?.role === "team_lead"
+  const isAdmin = user?.role === "admin"
+  const canManage = isAdmin || user?.role === "team_lead"
   const personalSummary = user ? getPersonalSummary(user.id) : undefined
   const personalAlerts = user ? getPersonalizedAlerts(user.id) : []
   const actionableAlerts = canManage ? alerts : personalAlerts
@@ -45,9 +49,12 @@ export default function WorkforcePage() {
     return text.includes("train") || text.includes("certification") || text.includes("module")
   })
 
+  const projectCompletionRate = Math.round((mockProjectStats.annotationsCompleted / mockProjectStats.totalAnnotations) * 100)
+
   const baseTabs = canManage
     ? [
         { value: "overview", label: "Command Center" },
+        ...(isAdmin ? [{ value: "projects", label: "Projects" }] : []),
         { value: "team", label: "Team" },
         { value: "training", label: "Training" },
         { value: "insights", label: "Insights" },
@@ -126,6 +133,29 @@ export default function WorkforcePage() {
             <WorkforceDistribution composition={composition} headcountTrend={headcountTrend} />
           </Section>
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="projects" className="space-y-8">
+            <Section
+              title="Portfolio Health"
+              description="High-level metrics across all active annotation projects."
+            >
+              <ProjectMetrics
+                activeProjects={mockProjectStats.activeProjects}
+                totalAnnotations={mockProjectStats.totalAnnotations}
+                averageAccuracy={mockProjectStats.averageAccuracy}
+                completionRate={projectCompletionRate}
+              />
+            </Section>
+
+            <Section
+              title="Project Portfolio"
+              description="Search, filter, and review project progress to keep delivery on track."
+            >
+              <ProjectOverview />
+            </Section>
+          </TabsContent>
+        )}
 
         {canManage && (
           <TabsContent value="team" className="space-y-8">
