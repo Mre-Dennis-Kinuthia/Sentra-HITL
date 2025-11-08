@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { EmptyState } from "@/components/ui/empty-state"
 import type { QAReview, Annotation } from "@/lib/types"
 import { Search, ChevronUp, ChevronDown } from "lucide-react"
-import { EmptyState } from "@/components/ui/empty-state"
 
 interface QAReviewTableProps {
   reviews: (QAReview & { annotation?: Annotation })[]
@@ -20,17 +20,8 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
 
   const sortedReviews = [...reviews].sort((a, b) => {
-    let aVal: number
-    let bVal: number
-
-    if (sortField === "score") {
-      aVal = a.score
-      bVal = b.score
-    } else {
-      aVal = a.createdAt.getTime()
-      bVal = b.createdAt.getTime()
-    }
-
+    const aVal = sortField === "score" ? a.score : a.createdAt.getTime()
+    const bVal = sortField === "score" ? b.score : b.createdAt.getTime()
     return sortOrder === "asc" ? aVal - bVal : bVal - aVal
   })
 
@@ -42,23 +33,29 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
 
   const handleSort = (field: "score" | "date") => {
     if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+      setSortOrder((current) => (current === "asc" ? "desc" : "asc"))
     } else {
       setSortField(field)
       setSortOrder("desc")
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const scoreTone = (score: number) => {
+    if (score >= 90) return "bg-success/20 text-success"
+    if (score >= 75) return "bg-accent/20 text-accent"
+    return "bg-warning/20 text-warning"
+  }
+
+  const statusTone = (status: string) => {
     switch (status) {
       case "approved":
-        return "bg-accent/20 text-accent"
-      case "rejected":
-        return "bg-destructive/20 text-destructive"
+        return "text-success border-success/30"
       case "needs_revision":
-        return "bg-primary/20 text-primary"
+        return "text-warning border-warning/30"
+      case "rejected":
+        return "text-destructive border-destructive/30"
       default:
-        return "bg-muted"
+        return "text-muted-foreground border-muted"
     }
   }
 
@@ -75,15 +72,12 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by annotation ID or comment..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        <Input
+          placeholder="Search by annotation ID or comment..."
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          leadingIcon={<Search className="size-4" />}
+        />
 
         <div className="overflow-x-auto">
           <Table>
@@ -96,8 +90,9 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
                     className="flex items-center gap-1 hover:text-foreground transition-colors"
                   >
                     Quality Score
-                    {sortField === "score" &&
-                      (sortOrder === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                    {sortField === "score" && (
+                      sortOrder === "asc" ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />
+                    )}
                   </button>
                 </TableHead>
                 <TableHead>Status</TableHead>
@@ -108,54 +103,73 @@ export function QAReviewTable({ reviews }: QAReviewTableProps) {
                     className="flex items-center gap-1 hover:text-foreground transition-colors"
                   >
                     Date
-                    {sortField === "date" &&
-                      (sortOrder === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                    {sortField === "date" && (
+                      sortOrder === "asc" ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />
+                    )}
                   </button>
                 </TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredReviews.map((review) => (
-                <TableRow key={review.id}>
-                  <TableCell className="font-medium">#{review.annotationId}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-full bg-muted rounded-full h-2 max-w-[60px]">
-                        <div className="bg-accent h-full rounded-full" style={{ width: `${review.score}%` }} />
-                      </div>
-                      <span className="text-sm font-semibold">{review.score}%</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={`capitalize ${getStatusColor(review.status)}`}>
-                      {review.status.replace("_", " ")}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{review.comment}</TableCell>
-                  <TableCell className="text-sm">{review.createdAt.toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm">
-                      View
-                    </Button>
+              {filteredReviews.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-12">
+                    <EmptyState
+                      variant="no-results"
+                      title="No reviews match the current filters"
+                      description="Adjust your search terms or reset filters to explore more QA activity."
+                      actionLabel="Reset filters"
+                      onAction={() => {
+                        setSearchQuery("")
+                        setSortField("date")
+                        setSortOrder("desc")
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredReviews.map((review) => (
+                  <TableRow key={review.id} className="align-middle">
+                    <TableCell className="font-medium">#{review.annotationId}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3 min-w-[140px]">
+                        <div className="flex-1 h-2 rounded-full bg-muted">
+                          <div
+                            className="h-2 rounded-full bg-accent transition-smooth"
+                            style={{ width: `${review.score}%` }}
+                          />
+                        </div>
+                        <Badge className={`px-2 py-0.5 text-xs ${scoreTone(review.score)}`}>{review.score}%</Badge>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`capitalize ${statusTone(review.status)}`}>
+                        {review.status.replace("_", " ")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="max-w-sm text-sm text-muted-foreground">
+                      <p className="line-clamp-2">{review.comment}</p>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {review.createdAt.toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          View
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          Reassign
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
-
-        {filteredReviews.length === 0 && (
-          <EmptyState
-            variant={searchQuery ? "no-results" : "default"}
-            title={searchQuery ? "No reviews found" : "No reviews yet"}
-            description={
-              searchQuery
-                ? "Try adjusting your search query to find reviews"
-                : "Reviews will appear here once annotations are submitted for QA"
-            }
-          />
-        )}
       </CardContent>
     </Card>
   )
